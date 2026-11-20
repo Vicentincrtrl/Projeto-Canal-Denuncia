@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de denúncias</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <a href="#conteudo" class="pular-link">Ir para o conteúdo</a>
+  <header class="cabecalho">
+    <div class="cabecalho-interno">
+      <a href="index.html" class="marca">TARRAF <span>Canal de Denúncias</span></a>
+      <nav aria-label="Menu principal">
+        <a href="index.html">Início</a>
+        <a href="denuncia.html">Fazer denúncia</a>
+        <a href="consulta.html">Acompanhar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo" class="container painel">
+    <h1>Painel de denúncias</h1>
+    <button id="botao-sair">Sair</button>
+
+    <p id="mensagem-erro" class="erro" role="alert"></p>
+
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Protocolo</th>
+          <th scope="col">Categoria</th>
+          <th scope="col">Data</th>
+          <th scope="col">Status</th>
+          <th scope="col">Detalhes</th>
+        </tr>
+      </thead>
+      <tbody id="corpo-tabela"></tbody>
+    </table>
+
+    <div id="detalhe" class="resultado" hidden>
+      <h2>Descrição da denúncia</h2>
+      <p><strong>Protocolo:</strong> <span id="det-protocolo"></span></p>
+      <p id="det-descricao"></p>
+    </div>
+  </main>
+
+  <footer class="rodape">
+    <p>Projeto de extensão da Fatec · Canal de denúncias anônimas</p>
+    <p><a href="login.html">Área restrita</a></p>
+  </footer>
+
+  <script src="js/painel.js"></script>
+</body>
+</html>

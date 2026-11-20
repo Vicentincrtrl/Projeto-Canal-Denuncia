@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Administrador - Canal de Denúncias</title>
+  <link rel="stylesheet" href="css/estilo.css">
+  <!-- Importa a biblioteca Chart.js via CDN para gráficos modernos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Estilos blindados para o cabeçalho corporativo */
+    .cabecalho {
+      background: #901212 !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .cabecalho-interno {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .marca-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .marca {
+      color: #fff !important;
+      text-decoration: none !important;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    .badge-painel {
+      background: rgba(255, 255, 255, 0.12);
+      color: #f1f1f1;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: normal;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .menu-acoes {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .menu-acoes .btn-acao-topo, 
+    .menu-acoes a.btn-acao-topo,
+    .menu-acoes button.btn-acao-topo {
+      background: rgba(255, 255, 255, 0.08) !important;
+      color: #fff !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      padding: 8px 18px !important;
+      border-radius: 4px !important;
+      cursor: pointer !important;
+      font-weight: normal !important;
+      font-size: 13px !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: auto !important;
+      height: auto !important;
+      box-sizing: border-box !important;
+      white-space: nowrap !important;
+      transition: background 0.2s ease !important;
+    }
+    .menu-acoes .btn-acao-topo:hover {
+      background: rgba(255, 255, 255, 0.18) !important;
+    }
+    .menu-acoes .btn-relatorio-topo {
+      background: #10632d !important;
+      border-color: #137333 !important;
+    }
+    .menu-acoes .btn-relatorio-topo:hover {
+      background: #0d5224 !important;
+    }
+    .menu-acoes .btn-sair-topo {
+      background: rgba(0, 0, 0, 0.15) !important;
+      border-color: rgba(255, 255, 255, 0.15) !important;
+    }
+    .menu-acoes .btn-sair-topo:hover {
+      background: #b52b2b !important;
+      border-color: #c93030 !important;
+    }
+
+    /* TRAVA DE POSICIONAMENTO PARA O DROPDOWN NÃO VAZAR */
+    td.td-atribuicao {
+      position: relative !important;
+      overflow: visible !important;
+    }
+  </style>
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="cabecalho-interno">
+      <div class="marca-container">
+        <a href="index.html" class="marca">TARRAF</a>
+        <span class="badge-painel">Painel do Administrador</span>
+      </div>
+      <nav class="menu-acoes" aria-label="Menu principal">
+        <button onclick="gerarRelatorioExecutivo()" class="btn-acao-topo btn-relatorio-topo">
+          Relatório Executivo
+        </button>
+        <a href="index.html" class="btn-acao-topo">
+          Início
+        </a>
+        <button id="botao-sair" class="btn-acao-topo btn-sair-topo">
+          Sair
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo" class="container painel">
+    <h1>Dashboard Executivo & Gestão Geral</h1>
+    <p id="mensagem-erro" class="erro" role="alert"></p>
+
+    <!-- 1. PRIMEIRO: Dashboard Executivo (Gráficos e KPIs) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 30px;">
+      
+      <!-- Card 1: Métricas Gerais (KPIs) -->
+      <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #a91b1b; display: flex; flex-direction: column; justify-content: space-between;">
+        <h3 style="margin-top: 0; color: #333; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Visão Geral</h3>
+        <p style="margin: 8px 0; font-size: 14px;">Total de Denúncias: <strong id="dash-total" style="float: right; color: #a91b1b;">0</strong></p>
+        <p style="margin: 8px 0; font-size: 14px;">Em Análise: <strong id="dash-analise" style="float: right; color: #1a73e8;">0</strong></p>
+        <p style="margin: 8px 0; font-size: 14px;">Concluídas/Arquivadas: <strong id="dash-finalizadas" style="float: right; color: #137333;">0</strong></p>
+      </div>
+
+      <!-- Card 2: Gráfico de Barras - Desempenho de Analistas -->
+      <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #137333; display: flex; flex-direction: column;">
+        <h3 style="margin-top: 0; color: #333; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Desempenho de Analistas (Entregas)</h3>
+        <div style="position: relative; height: 180px; width: 100%; margin-top: 10px;">
+          <canvas id="graficoAnalistas"></canvas>
+        </div>
+      </div>
+
+      <!-- Card 3: Gráfico de Pizza (Ocupando largura total embaixo com legenda lateral) -->
+      <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #f2994a; grid-column: 1 / -1; display: flex; flex-direction: column;">
+        <h3 style="margin-top: 0; color: #333; font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;">Distribuição de Denúncias por Categoria</h3>
+        <div style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+          <div style="position: relative; height: 180px; width: 100%; max-width: 500px;">
+            <canvas id="graficoCategorias"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 2. SEGUNDO: Tabela de Denúncias com Filtros -->
+    <div style="margin-bottom: 30px;">
+      <h2 style="margin-bottom: 15px;">Gestão de Denúncias</h2>
+      
+      <div style="display: flex; gap: 15px; margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); align-items: center; flex-wrap: wrap;">
+        <div>
+          <label for="filtro-categoria" style="font-weight: bold; display: block; margin-bottom: 5px;">Categoria:</label>
+          <select id="filtro-categoria" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+            <option value="">Todas as Categorias</option>
+            <option value="1">Assédio e Discriminação</option>
+            <option value="2">Fraude e Corrupção</option>
+            <option value="3">Segurança do Trabalho e Meio Ambiente</option>
+            <option value="4">Qualidade e Desvio de Materiais</option>
+            <option value="5">Vazamento de Dados e LGPD</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="filtro-ordem" style="font-weight: bold; display: block; margin-bottom: 5px;">Ordenar por Data:</label>
+          <select id="filtro-ordem" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+            <option value="desc">Mais recentes primeiro</option>
+            <option value="asc">Mais antigas primeiro</option>
+          </select>
+        </div>
+
+        <div style="align-self: flex-end;">
+          <button id="btn-filtrar" style="background: #a91b1b; color: white; border: none; padding: 9px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">Filtrar</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Protocolo</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Denúncia</th>
+            <th scope="col">Data</th>
+            <th scope="col">Status</th>
+            <th scope="col">Atribuir</th>
+            <th scope="col">Detalhes</th>
+          </tr>
+        </thead>
+        <tbody id="corpo-tabela-admin"></tbody>
+      </table>
+    </div>
+
+    <!-- 3. TERCEIRO: Tabela de Analistas Cadastrados -->
+    <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 30px;">
+      <h2>Analistas Cadastrados no Sistema</h2>
+      <table style="margin-top: 15px; width: 100%;">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Matrícula</th>
+            <th scope="col">Nome</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Ação</th>
+          </tr>
+        </thead>
+        <tbody id="corpo-tabela-analistas"></tbody>
+      </table>
+    </div>
+
+    <!-- 4. POR ÚLTIMO: Card de Cadastro de Novo Analista -->
+    <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 25px;">
+      <h2>Cadastrar Novo Analista</h2>
+      <form id="form-cadastrar-analista" style="display: flex; gap: 15px; margin-top: 15px; align-items: flex-end; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 140px;">
+          <label for="novo-matricula" style="display: block; margin-bottom: 5px; font-weight: bold;">Matrícula:</label>
+          <input type="text" id="novo-matricula" placeholder="Ex: MAT-001" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <div style="flex: 1; min-width: 180px;">
+          <label for="novo-nome" style="display: block; margin-bottom: 5px; font-weight: bold;">Nome:</label>
+          <input type="text" id="novo-nome" placeholder="Nome completo" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <div style="flex: 1; min-width: 180px;">
+          <label for="novo-email" style="display: block; margin-bottom: 5px; font-weight: bold;">E-mail:</label>
+          <input type="email" id="novo-email" placeholder="analista@tarraf.com.br" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <div style="flex: 1; min-width: 140px;">
+          <label for="novo-senha" style="display: block; margin-bottom: 5px; font-weight: bold;">Senha:</label>
+          <input type="password" id="novo-senha" placeholder="Senha" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <div>
+          <button type="submit" style="background: #a91b1b; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">Cadastrar</button>
+        </div>
+      </form>
+      <p id="mensagem-cadastro" style="margin-top: 10px; font-size: 14px; font-weight: bold;"></p>
+    </div>
+
+  </main>
+
+  <!-- Modal para Exibir a Descrição Completa e o Parecer Técnico -->
+  <div id="modal-descricao" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 600px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); position: relative;">
+      <h3 id="modal-titulo" style="margin-top: 0; color: #a91b1b; border-bottom: 2px solid #eee; padding-bottom: 10px;">Detalhes da Denúncia</h3>
+      
+      <p style="margin: 15px 0 5px 0; font-weight: bold; color: #555;">Descrição Completa do Relato:</p>
+      <div id="modal-texto-descricao" style="background: #f9f9f9; padding: 12px; border: 1px solid #ddd; border-radius: 4px; max-height: 140px; overflow-y: auto; white-space: pre-wrap; font-size: 14px; color: #333; margin-bottom: 15px;"></div>
+
+      <div id="modal-container-parecer" style="display: none;">
+        <p style="margin: 15px 0 5px 0; font-weight: bold; color: #137333;">Parecer Técnico do Analista:</p>
+        <div id="modal-texto-parecer" style="background: #e6f4ea; padding: 12px; border: 1px solid #ceead6; border-radius: 4px; max-height: 140px; overflow-y: auto; white-space: pre-wrap; font-size: 14px; color: #137333;"></div>
+      </div>
+
+      <div style="text-align: right; margin-top: 20px;">
+        <button onclick="fecharModalDescricao()" style="background: #333; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/painel-admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova denúncia</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <a href="#conteudo" class="pular-link">Ir para o conteúdo</a>
+<header class="cabecalho">
+  <div class="cabecalho-interno">
+    <a href="index.html" class="marca">TARRAF <span>Canal de Denúncias</span></a>
+    <nav aria-label="Menu principal">
+      <a href="index.html">Início</a>
+      <a href="denuncia.html">Fazer denúncia</a>
+      <a href="consulta.html">Acompanhar</a>
+    </nav>
+  </div>
+</header>
+  <h1>Nova denúncia</h1>
+  <p>Não pedimos nenhum dado pessoal.</p>
+
+  <form id="form-denuncia" class="formulario">
+    <label for="categoria">Categoria</label>
+    <select id="categoria" required>
+      <option value="">Selecione...</option>
+    </select>
+
+    <label for="descricao">Descreva o que aconteceu</label>
+    <textarea id="descricao" rows="8" required></textarea>
+
+    <p id="mensagem-erro" class="erro"></p>
+    <button type="submit">Enviar denúncia</button>
+  </form>
+
+  <div id="confirmacao" class="confirmacao" hidden>
+    <h2>Denúncia enviada!</h2>
+    <p>Seu protocolo é:</p>
+    <p id="protocolo" class="protocolo"></p>
+    <p>Anote este número. Ele é a única forma de acompanhar sua denúncia.</p>
+  </div>
+
+  <script src="js/denuncia.js"></script>
+</body>
+</html>

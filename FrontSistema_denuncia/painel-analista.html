@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Analista - Canal de Denúncias</title>
+  <link rel="stylesheet" href="css/estilo.css">
+  <style>
+    /* Estilos corporativos blindados para o cabeçalho do analista */
+    .cabecalho {
+      background: #901212 !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .cabecalho-interno {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .marca-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .marca {
+      color: #fff !important;
+      text-decoration: none !important;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    .badge-painel {
+      background: rgba(255, 255, 255, 0.12);
+      color: #f1f1f1;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: normal;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .usuario-info {
+      color: #fff;
+      font-size: 14px;
+      font-weight: normal;
+    }
+    .menu-acoes {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .menu-acoes .btn-acao-topo, 
+    .menu-acoes a.btn-acao-topo,
+    .menu-acoes button.btn-acao-topo {
+      background: rgba(255, 255, 255, 0.08) !important;
+      color: #fff !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      padding: 8px 18px !important;
+      border-radius: 4px !important;
+      cursor: pointer !important;
+      font-weight: normal !important;
+      font-size: 13px !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: auto !important;
+      height: auto !important;
+      box-sizing: border-box !important;
+      white-space: nowrap !important;
+      transition: background 0.2s ease !important;
+    }
+    .menu-acoes .btn-acao-topo:hover {
+      background: rgba(255, 255, 255, 0.18) !important;
+    }
+    .menu-acoes .btn-sair-topo {
+      background: rgba(0, 0, 0, 0.15) !important;
+      border-color: rgba(255, 255, 255, 0.15) !important;
+    }
+    .menu-acoes .btn-sair-topo:hover {
+      background: #b52b2b !important;
+      border-color: #c93030 !important;
+    }
+  </style>
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="cabecalho-interno">
+      <div class="marca-container">
+        <a href="index.html" class="marca">TARRAF</a>
+        <span class="badge-painel">Painel do Analista</span>
+      </div>
+      <nav class="menu-acoes" aria-label="Menu principal">
+        <span id="saudacao-analista" class="usuario-info">Carregando usuário...</span>
+        <button id="botao-sair" class="btn-acao-topo btn-sair-topo">Sair</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo" class="container painel">
+    <h1>Painel de Denúncias (Analista)</h1>
+    <p id="mensagem-erro" class="erro" role="alert"></p>
+
+    <!-- Cards de KPIs do Analista -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px;">
+      <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #1a73e8;">
+        <h3 style="margin-top: 0; font-size: 14px; color: #555;">ATRIBUÍDAS A MIM</h3>
+        <p id="kpi-total" style="font-size: 24px; font-weight: bold; margin: 5px 0 0 0; color: #1a73e8;">0</p>
+      </div>
+      <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #f2994a;">
+        <h3 style="margin-top: 0; font-size: 14px; color: #555;">EM ANÁLISE</h3>
+        <p id="kpi-analise" style="font-size: 24px; font-weight: bold; margin: 5px 0 0 0; color: #f2994a;">0</p>
+      </div>
+      <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #137333;">
+        <h3 style="margin-top: 0; font-size: 14px; color: #555;">FINALIZADAS</h3>
+        <p id="kpi-finalizadas" style="font-size: 24px; font-weight: bold; margin: 5px 0 0 0; color: #137333;">0</p>
+      </div>
+    </div>
+
+    <!-- Filtros de Busca -->
+    <div style="display: flex; gap: 15px; margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); align-items: center; flex-wrap: wrap;">
+      <div>
+        <label for="filtro-categoria" style="font-weight: bold; display: block; margin-bottom: 5px;">Categoria:</label>
+        <select id="filtro-categoria" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+          <option value="">Todas as Categorias</option>
+          <option value="1">Assédio e Discriminação</option>
+          <option value="2">Fraude e Corrupção</option>
+          <option value="3">Segurança do Trabalho e Meio Ambiente</option>
+          <option value="4">Qualidade e Desvio de Materiais</option>
+          <option value="5">Vazamento de Dados e LGPD</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="filtro-ordem" style="font-weight: bold; display: block; margin-bottom: 5px;">Ordenar por Data:</label>
+        <select id="filtro-ordem" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+          <option value="desc">Mais recentes primeiro</option>
+          <option value="asc">Mais antigas primeiro</option>
+        </select>
+      </div>
+
+      <div style="align-self: flex-end;">
+        <button id="btn-filtrar" style="background: #a91b1b; color: white; border: none; padding: 9px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">Filtrar</button>
+      </div>
+    </div>
+
+    <!-- Tabela de Denúncias do Analista -->
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Protocolo</th>
+          <th scope="col">Categoria</th>
+          <th scope="col">Data</th>
+          <th scope="col">Status</th>
+          <th scope="col">Detalhes</th>
+        </tr>
+      </thead>
+      <tbody id="corpo-tabela-analista"></tbody>
+    </table>
+  </main>
+
+  <script src="js/painel-analista.js"></script>
+</body>
+</html>

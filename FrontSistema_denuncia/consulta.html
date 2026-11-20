@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acompanhar denúncia</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <a href="#conteudo" class="pular-link">Ir para o conteúdo</a>
+  <header class="cabecalho">
+    <div class="cabecalho-interno">
+      <a href="index.html" class="marca">TARRAF <span>Canal de Denúncias</span></a>
+      <nav aria-label="Menu principal">
+        <a href="index.html">Início</a>
+        <a href="denuncia.html">Fazer denúncia</a>
+        <a href="consulta.html">Acompanhar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo" class="container">
+    <h1>Acompanhar denúncia</h1>
+    <p>Digite o protocolo que você recebeu ao enviar a denúncia.</p>
+
+    <form id="form-consulta" class="formulario">
+      <label for="protocolo-busca">Protocolo</label>
+      <input type="text" id="protocolo-busca" placeholder="Ex.: DEN-123456" required>
+
+      <p id="mensagem-erro" class="erro" role="alert"></p>
+      <button type="submit">Consultar</button>
+    </form>
+
+    <div id="resultado" class="resultado" hidden>
+      <h2>Resultado da consulta</h2>
+      <p><strong>Protocolo:</strong> <span id="res-protocolo"></span></p>
+      <p><strong>Categoria:</strong> <span id="res-categoria"></span></p>
+      <p><strong>Data de abertura:</strong> <span id="res-data"></span></p>
+      <p><strong>Status:</strong> <span id="res-status"></span></p>
+      
+      <!-- Bloco dinâmico do Parecer Técnico -->
+      <div id="bloco-parecer" style="margin-top: 15px; padding: 12px; background: #f9f9f9; border-left: 4px solid #a91b1b; border-radius: 4px;" hidden>
+        <strong>Parecer Técnico / Resposta da Instituição:</strong>
+        <p id="res-parecer" style="margin-top: 8px; white-space: pre-line; color: #333;"></p>
+      </div>
+    </div>
+
+    <p><a href="index.html">Voltar para o início</a></p>
+  </main>
+
+  <footer class="rodape">
+    <p>Projeto de extensão da Fatec · Canal de denúncias anônimas</p>
+    <p><a href="login.html">Área restrita</a></p>
+  </footer>
+
+  <script src="js/consulta.js"></script>
+</body>
+</html>
